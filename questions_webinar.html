@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/black.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/monokai.min.css">
+    <style>
+        .reveal pre code {
+            padding: 5px;
+            font-size: 1.2em;
+            line-height: 1.2;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .reveal h1 { font-size: 2.5em; }
+        .reveal h2 { font-size: 1.8em; }
+        .reveal li { margin: 20px 0; }
+        .reveal section { height: 100%; }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section>
+                <h1>Go Programming Concepts</h1>
+                <h3>Advanced Topics and Best Practices</h3>
+            </section>
+
+            <!-- Q1 -->
+            <section>
+                <section>
+                    <h2>Goroutines and Channels</h2>
+                    <p>How do goroutines and channels work, and what role does the Go scheduler play?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>Goroutines are lightweight functions running concurrently via the go keyword</li>
+                        <li>Channels enable safe communication between goroutines and help synchronize execution</li>
+                        <li>The Go scheduler implements an M:N model, multiplexing thousands of goroutines onto OS threads, ensuring efficient use of multi-core processors</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Q2 -->
+            <section>
+                <section>
+                    <h2>Buffered vs Unbuffered Channels</h2>
+                    <p>What is the difference between buffered and unbuffered channels?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>Unbuffered channels: Block the sender until a receiver is ready (and vice versa)</li>
+                        <li>Buffered channels: Allow a fixed number of values to be queued; they only block when full (for sends) or empty (for receives)</li>
+                    </ul>
+                    <pre><code class="golang">ch := make(chan int, 3) // buffered with capacity 3</code></pre>
+                </section>
+            </section>
+
+            <!-- Q3 -->
+            <section>
+                <section>
+                    <h2>Defer Statement</h2>
+                    <p>How does the defer statement work in Go? When are deferred calls executed?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>Deferred function calls are pushed onto a stack and executed in last-in, first-out (LIFO) order just before the surrounding function returns</li>
+                        <li>They are useful for resource cleanup (e.g., closing files) regardless of how the function exits</li>
+                        <li>Note: Even if a function panics, deferred calls will run (unless the program crashes)</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Q4 -->
+            <section>
+                <section>
+                    <h2>Panic and Recover</h2>
+                    <p>Explain the panic and recover mechanism in Go.</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>panic: Immediately stops the ordinary flow of control and begins panicking</li>
+                        <li>recover: A built-in function that regains control of a panicking goroutine if called within a deferred function</li>
+                    </ul>
+                    <pre><code class="golang">defer func() {
+    if r := recover(); r != nil {
+        fmt.Println("Recovered from panic:", r)
+    }
+}()
+panic("something went wrong")</code></pre>
+                </section>
+            </section>
+
+            <!-- Q5 -->
+            <section>
+                <section>
+                    <h2>Go Keyword in Loops</h2>
+                    <p>What pitfalls exist when using the go keyword inside loops?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <p>Pitfall: Loop variables are reused, so launching a goroutine inside a loop may lead all goroutines to see the final loop value.</p>
+                    <pre><code class="golang">for i := 0; i < 5; i++ {
+    go func(n int) {
+        fmt.Println(n)
+    }(i)
+}</code></pre>
+                </section>
+            </section>
+
+            <!-- Q6 -->
+            <section>
+                <section>
+                    <h2>Slice Memory Layout</h2>
+                    <p>Describe the memory layout of a slice in Go.</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <p>A slice has three components:</p>
+                    <ul>
+                        <li>Pointer: Points to the underlying array</li>
+                        <li>Length: The number of elements currently in the slice</li>
+                        <li>Capacity: The size of the underlying array from the start of the slice</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Q7 -->
+            <section>
+                <section>
+                    <h2>Thread-Safe Data Structures</h2>
+                    <p>How do you implement a thread-safe data structure in Go?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <pre><code class="golang">type SafeCounter struct {
+    mu sync.Mutex
+    count int
+}
+func (sc *SafeCounter) Increment() {
+    sc.mu.Lock()
+    sc.count++
+    sc.mu.Unlock()
+}</code></pre>
+                </section>
+            </section>
+
+            <!-- Q8 -->
+            <section>
+                <section>
+                    <h2>Slice Types</h2>
+                    <p>What is the difference between a nil slice, an empty slice, and a zero slice?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>Nil slice: Has no underlying array and its value is nil</li>
+                        <li>Empty slice: Has an underlying array with zero elements</li>
+                        <li>Zero slice: Typically refers to a slice of length 0 created with make([]T, 0)</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Q9 -->
+            <section>
+                <section>
+                    <h2>Interfaces vs Structs</h2>
+                    <p>What are the differences between interfaces and structs in Go?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>Structs: Concrete types that hold data</li>
+                        <li>Interfaces: Abstract types that define method sets</li>
+                        <li>Interface satisfaction is implicit—no explicit declaration is required</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Q10 -->
+            <section>
+                <section>
+                    <h2>Select Statement</h2>
+                    <p>How does the select statement work, and how can it be used for non-blocking operations?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <pre><code class="golang">select {
+case val := <-ch:
+    fmt.Println("Received:", val)
+default:
+    fmt.Println("No value received")
+}</code></pre>
+                </section>
+            </section>
+
+            <!-- Q11 -->
+            <section>
+                <section>
+                    <h2>Single Execution</h2>
+                    <p>How do you ensure a function is executed only once in concurrent settings?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <pre><code class="golang">var once sync.Once
+doSomething := func() {
+    fmt.Println("Executed once")
+}
+for i := 0; i < 5; i++ {
+    go once.Do(doSomething)
+}</code></pre>
+                </section>
+            </section>
+
+            <!-- Q12 -->
+            <section>
+                <section>
+                    <h2>Pass By Value vs Reference</h2>
+                    <p>Explain pass-by-value vs. pass-by-reference in Go with respect to slices and arrays.</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>Arrays: Are passed by value (a copy is made) unless a pointer is used</li>
+                        <li>Slices: Are reference types; modifications affect the underlying array</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Q13 -->
+            <section>
+                <section>
+                    <h2>Testing Concurrent Code</h2>
+                    <p>How do you test concurrent code in Go and detect race conditions?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <pre><code class="bash">go test -race ./...</code></pre>
+                    <ul>
+                        <li>Write tests that simulate concurrent access</li>
+                        <li>Use synchronization primitives in tests</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Q14 -->
+            <section>
+                <section>
+                    <h2>GOMAXPROCS</h2>
+                    <p>How does the runtime setting GOMAXPROCS affect Go's parallelism?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>Sets the maximum number of OS threads that can execute user-level Go code simultaneously</li>
+                        <li>By default, it is set to the number of CPU cores</li>
+                        <li>Adjusting it can improve performance in CPU-bound applications</li>
+                    </ul>
+                </section>
+            </section>
+
+            <!-- Q15 -->
+            <section>
+                <section>
+                    <h2>Panic vs Error</h2>
+                    <p>What is the difference between panic and error in Go? When should each be used?</p>
+                </section>
+                <section>
+                    <h2>Answer</h2>
+                    <ul>
+                        <li>error: Represents a recoverable error; functions return an error value</li>
+                        <li>panic: Indicates a program state that cannot continue normally</li>
+                        <li>Use error for expected error conditions</li>
+                        <li>Use panic for unrecoverable errors or programming bugs</li>
+                    </ul>
+                </section>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/go.min.js"></script>
+    <script>
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'slide',
+            controls: true,
+            progress: true,
+            center: true,
+            mouseWheel: true
+        });
+        hljs.highlightAll();
+    </script>
+</body>
+</html>
