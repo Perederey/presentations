@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/theme/night.min.css">
+    <style>
+        .reveal section {
+            height: 100%;
+        }
+        .mermaid {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        .reveal pre {
+            background: #2d2d2d;
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .reveal h1, .reveal h2 {
+            color: #f0f0f0;
+        }
+        .reveal section ul {
+            list-style-type: disc;
+        }
+        .reveal section ul li {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Title Slide -->
+            <section>
+                <h1>GoferMart Loyalty System</h1>
+                <h3>HTTP API for User Loyalty Management</h3>
+                <p>2025</p>
+            </section>
+
+            <!-- Project Overview -->
+            <section>
+                <h2>1. Project Overview</h2>
+                <div class="mermaid">
+                    graph TD
+                        A[User Registration] --> B[Order Upload]
+                        B --> C[Points Calculation]
+                        C --> D[Balance Management]
+                        D --> E[Points Withdrawal]
+                        style A fill:#f9f,stroke:#333
+                        style B fill:#bbf,stroke:#333
+                        style C fill:#bfb,stroke:#333
+                        style D fill:#fbf,stroke:#333
+                        style E fill:#fbb,stroke:#333
+                </div>
+            </section>
+
+            <!-- System Architecture -->
+            <section>
+                <h2>2. System Architecture</h2>
+                <div class="mermaid">
+                    graph LR
+                        A[Client] --> B[HTTP API]
+                        B --> C[PostgreSQL]
+                        B --> D[External System]
+                        style A fill:#f9f,stroke:#333
+                        style B fill:#bbf,stroke:#333
+                        style C fill:#bfb,stroke:#333
+                        style D fill:#fbf,stroke:#333
+                </div>
+            </section>
+
+            <!-- Business Logic -->
+            <section>
+                <h2>3. Business Logic Flow</h2>
+                <div class="mermaid">
+                    sequenceDiagram
+                        participant U as User
+                        participant A as API
+                        participant E as External System
+                        participant DB as Database
+                        U->>A: Register/Login
+                        A->>DB: Store Credentials
+                        U->>A: Upload Order
+                        A->>E: Check Order Status
+                        E->>A: Return Points
+                        A->>DB: Update Balance
+</div>
+            </section>
+
+            <!-- API Endpoints -->
+            <section>
+                <h2>4. HTTP API Endpoints</h2>
+                <pre><code>POST /api/user/register
+POST /api/user/login
+POST /api/user/orders
+GET /api/user/orders
+GET /api/user/balance
+POST /api/user/balance/withdraw
+GET /api/user/withdrawals</code></pre>
+            </section>
+
+        
+            <!-- Balance Management -->
+            <section>
+                <h2>5. Balance Management</h2>
+                <ul>
+                    <li>Current Balance Tracking</li>
+                    <li>Points Withdrawal System</li>
+                    <li>Transaction History</li>
+                </ul>
+                <pre><code>{
+    "current": 500.5,
+    "withdrawn": 42
+}</code></pre>
+            </section>
+
+            <!-- External System Integration -->
+            <section>
+                <h2>6. External System Integration</h2>
+                <div class="mermaid">
+                    graph TD
+                        A[Order Upload] --> B{Validation}
+                        B -->|Valid| C[External System]
+                        B -->|Invalid| D[Error Response]
+                        C --> E[Points Calculation]
+                        E --> F[Balance Update]
+                </div>
+            </section>
+
+            <!-- Service Configuration -->
+            <section>
+                <h2>7. Service Configuration</h2>
+                <pre><code>Environment Variables:
+RUN_ADDRESS
+DATABASE_URI
+ACCRUAL_SYSTEM_ADDRESS
+
+Flags:
+-a (address)
+-d (database)
+-r (accrual system)</code></pre>
+            </section>
+
+            <!-- Implementation Details -->
+            <section>
+                <h2>8. Implementation Details</h2>
+                <ul>
+                    <li>Luhn Algorithm Validation</li>
+                    <li>Rate Limiting</li>
+                    <li>Logging (Uber Zap, Zerolog, SLog)</li>
+                </ul>
+            </section>
+
+            <!-- Discussion -->
+            <section>
+                <h2>10. Discussion</h2>
+                <ul>
+                    <li>Additional Use Cases</li>
+                    <li>The most popular mistakes</li>
+                    <li>Questions?</li>
+                </ul>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/4.3.1/reveal.js"></script>
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({ startOnLoad: true });
+      </script>
+    <script>
+
+        Reveal.initialize({
+            hash: true,
+            controls: true,
+            progress: true,
+            center: true,
+            transition: 'slide'
+        });
+    </script>
+</body>
+</html>
